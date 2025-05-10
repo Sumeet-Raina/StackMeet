@@ -50,10 +50,14 @@ app.post("/login", async (req, res) => {
       const token = await jwt.sign({ _id: user._id }, "STACKMEET@app$6", {
         expiresIn: "1d",
       });
-      console.log(token);
 
       // Add the token to cookie and send the response back to the user
-      res.cookie("token", token);
+      res.cookie(
+        "token",
+        token,
+        { httpOnly: true },
+        { expires: new Date(Date.now() + 8 * 3600000) }
+      );
       res.send("Login successfull!!");
     } else {
       throw new Error("Invalid credentials.");
