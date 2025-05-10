@@ -6,6 +6,7 @@ const { validateSignUpData } = require("./utils/validation");
 const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
+const { userAuth } = require("../src/middlewares/auth");
 const app = express();
 
 app.use(express.json());
@@ -60,25 +61,13 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.get("/profile", async (req, res) => {
+app.get("/profile", userAuth, async (req, res) => {
   try {
-    const cookies = req.cookies;
+    const user = req.user; // this user is coming from auth middleware now which we attached to req obj
 
-    const { token } = cookies;
-
-    if (!token) {
-      throw new Error("Invalid token");
-    }
-
-    const decodedMessage = await jwt.verify(token, "STACKMEET@app$6");
-
-    const { _id } = decodedMessage;
-
-    const user = await User.findById(_id);
-
-    res.send(`reading cookie  ${user}`);
+    res.send(user);
   } catch (err) {
-    res.status(400).send("Error1: " + err.message);
+    res.status(400).send("Error: " + err.message);
   }
 });
 
@@ -93,57 +82,6 @@ app.get("/user", async (req, res) => {
     }
   } catch (err) {
     res.status(400).send("Error fetching the user by email: " + err.message);
-  }
-});
-
-app.get("/feed", async (req, res) => {
-  try {
-    const users = await User.find({}); // it is like select * from table
-    if (users.length === 0) {
-      res.status(404).send("User not found");
-    } else {
-      res.send(users);
-    }
-  } catch (err) {
-    res.status(400).send("Error fetching the user feed: " + err.message);
-  }
-});
-
-app.delete("/user", async (req, res) => {
-  const userId = req.body.userId;
-  try {
-    const user = await User.findByIdAndDelete(userId);
-    res.send("User deleted successfully!");
-  } catch (err) {
-    res.status(400).send("Something went wrong!");
-  }
-});
-
-app.patch("/user/:userId", async (req, res) => {
-  const userId = req.params.userId;
-  const data = req.body;
-  console.log(data);
-  try {
-    const ALLOWED_UPDATES = ["skills", "photoURL", "about", "gender", "age"];
-
-    const isUpdateAllowed = Object.keys(data).every((key) =>
-      ALLOWED_UPDATES.includes(key)
-    );
-
-    if (!isUpdateAllowed) {
-      throw new Error("Updates not allowed");
-    }
-
-    if (data?.skills.length > 10) {
-      throw new Error("Skills cannot be more than 10"); //when this error is throwm it will be passed down to err.message in catch block
-    }
-    await User.findByIdAndUpdate(userId, data, {
-      returnDocument: "after",
-      runValidtors: true,
-    });
-    res.send("User updated successfully!");
-  } catch (err) {
-    res.status(400).send("UPDATE FAILED: " + err.message);
   }
 });
 
