@@ -47,7 +47,9 @@ app.post("/login", async (req, res) => {
 
     if (isPasswordValid) {
       // create a JWT token
-      const token = await jwt.sign({ _id: user._id }, "STACKMEET@app$6");
+      const token = await jwt.sign({ _id: user._id }, "STACKMEET@app$6", {
+        expiresIn: "1d",
+      });
       console.log(token);
 
       // Add the token to cookie and send the response back to the user
@@ -83,6 +85,12 @@ app.get("/user", async (req, res) => {
   } catch (err) {
     res.status(400).send("Error fetching the user by email: " + err.message);
   }
+});
+
+app.post("/sendConnectionRequest", userAuth, async (req, res) => {
+  const user = req.user;
+  console.log("sending a connection request");
+  res.send(user.firstName + " sent the connection request!");
 });
 
 connectDB()
