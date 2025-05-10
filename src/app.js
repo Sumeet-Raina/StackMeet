@@ -5,7 +5,7 @@ const User = require("./models/user");
 const { validateSignUpData } = require("./utils/validation");
 const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
-const jwt = require("jsonwebtoken");
+
 const { userAuth } = require("../src/middlewares/auth");
 const app = express();
 
@@ -46,11 +46,7 @@ app.post("/login", async (req, res) => {
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (isPasswordValid) {
-      // create a JWT token
-      const token = await jwt.sign({ _id: user._id }, "STACKMEET@app$6", {
-        expiresIn: "1d",
-      });
-
+      const token = await user.getJWT();
       // Add the token to cookie and send the response back to the user
       res.cookie(
         "token",
