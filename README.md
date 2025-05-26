@@ -32,9 +32,9 @@
 
 2. **Run dev environment** 💻
 
-```bash
-npm start
-```
+   ```bash
+    npm start
+   ```
 
 ## 🔮 Coming Soon
 
