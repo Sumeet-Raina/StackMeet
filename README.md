@@ -42,12 +42,11 @@ npm start
 A sleek, responsive UI built with **React** and styled using **TailwindCSS**, offering smooth navigation and engaging user experience for matches and messaging.
 
 ### ☁️ Deployment on AWS
-The complete application will be deployed on **AWS**, leveraging services like **EC2**, **S3**, and **Route 53** for high availability, scalability, and performance.
+Frontend will be deployed on **AWS** and use AWS SES to send emails.
 
 ### ⏰ Cron Jobs
 Scheduled background tasks using **cron jobs** to:
-- Recommend matches based on user preferences and activity
-- Perform periodic database cleanup and maintenance
+- Send an email to all the users to who have received a friend request previous day
 
 ### 💬 Real-Time Chat
 Implementing **real-time messaging** between matched users using **WebSockets** or **Socket.io**, enabling instant communication within the app.
