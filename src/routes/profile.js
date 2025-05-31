@@ -29,7 +29,7 @@ profileRouter.patch("/profile/edit", userAuth, (req, res) => {
       data: loggedInUser,
     });
   } catch (err) {
-    res.status(400).send("Error: " + err);
+    res.status(400).json("Error: " + err.message);
   }
 });
 
@@ -56,7 +56,7 @@ profileRouter.patch("/profile/password", userAuth, async (req, res) => {
     }
     res.send("Password updated successfully");
   } catch (err) {
-    res.status(400).send("Error: " + err.message);
+    res.status(400).json("Error: " + err.message);
   }
 });
 
