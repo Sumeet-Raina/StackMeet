@@ -1,6 +1,6 @@
 # 🔗 StackMeet
 
-**StackMeet** is a matchmaking app inspired by Tinder — designed to connect users based on shared interests and preferences. The backend is built with **Node.js**, **Express**, and **MongoDB**, and includes secure user authentication and authorization.
+**StackMeet** is an app for connecting developers — designed to connect users based on shared interests and preferences. The backend is built with **Node.js**, **Express**, and **MongoDB**, and includes secure user authentication and authorization.
 
 ---
 
