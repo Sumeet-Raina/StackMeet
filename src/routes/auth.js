@@ -3,6 +3,7 @@ const { validateSignUpData } = require("../utils/validation");
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const authRouter = express.Router();
+const isProduction = process.env.NODE_ENV === "production";
 
 authRouter.post("/signup", async (req, res) => {
   try {
@@ -20,7 +21,12 @@ authRouter.post("/signup", async (req, res) => {
     const savedUser = await user.save(); // this will save data on database
 
     const token = await savedUser.getJWT();
-    res.cookie("token", token, { expires: new Date(Date.now() + 8 * 3600000) });
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? "None" : "Lax", // Lax for localhost, None for production HTTPS
+      expires: new Date(Date.now() + 8 * 3600000),
+    });
     res.json({ message: "User added successfully!", data: savedUser });
   } catch (err) {
     res.status(400).send("Error saving the user: " + err.message);
@@ -42,6 +48,9 @@ authRouter.post("/login", async (req, res) => {
       const token = await user.getJWT();
       // Add the token to cookie and send the response back to the user
       res.cookie("token", token, {
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: isProduction ? "None" : "Lax",
         expires: new Date(Date.now() + 8 * 3600000),
       });
       res.send(user);
